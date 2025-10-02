@@ -2,14 +2,7 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useJsonContext } from '@/components/providers/JsonContextProvider';
-import {
-  X,
-  CheckCircle,
-  XCircle,
-  FileText,
-  Hash,
-  AlignLeft,
-} from 'lucide-react';
+import { X, CheckCircle, XCircle } from 'lucide-react';
 
 interface JsonInputProps {
   placeholder?: string;

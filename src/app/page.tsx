@@ -1,16 +1,8 @@
 'use client';
 
-import { JsonInput } from '@/components/input';
+import { JsonInput, FileUpload } from '@/components/input';
 import { useJsonContext } from '@/components/providers/JsonContextProvider';
-import {
-  FileText,
-  Edit3,
-  Eye,
-  CheckCircle,
-  XCircle,
-  AlertCircle,
-  Braces,
-} from 'lucide-react';
+import { FileText, CheckCircle, XCircle } from 'lucide-react';
 
 export default function Home() {
   const { state } = useJsonContext();
@@ -34,6 +26,19 @@ export default function Home() {
             <h2 className='text-lg font-medium text-gray-900 dark:text-white'>
               Input
             </h2>
+
+            <FileUpload />
+
+            <div className='relative'>
+              <div className='absolute inset-0 flex items-center'>
+                <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+              </div>
+              <div className='relative flex justify-center text-sm'>
+                <span className='px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400'>
+                  or paste JSON below
+                </span>
+              </div>
+            </div>
 
             <JsonInput />
 
