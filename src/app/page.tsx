@@ -1,11 +1,19 @@
 'use client';
 
 import { JsonInput, FileUpload, ValidationDisplay } from '@/components/input';
+import { JsonTree } from '@/components/tree';
 import { useJsonContext } from '@/components/providers/JsonContextProvider';
 import { FileText } from 'lucide-react';
 
 export default function Home() {
-  const { state } = useJsonContext();
+  const {
+    state,
+    toggleNode,
+    saveEdit,
+    expandAll,
+    collapseAll,
+    setSearchQuery,
+  } = useJsonContext();
 
   return (
     <div className='min-h-screen bg-white dark:bg-gray-900 p-6'>
@@ -52,26 +60,30 @@ export default function Home() {
             )}
           </div>
 
-          {/* Preview Section */}
+          {/* Tree View Section */}
           <div className='space-y-4'>
             <h2 className='text-lg font-medium text-gray-900 dark:text-white'>
-              Preview
+              Tree View
             </h2>
 
-            <div className='bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-h-[400px] overflow-hidden'>
-              {state.jsonData.isValid && state.jsonData.value ? (
-                <div className='p-4'>
-                  <pre className='text-sm text-gray-800 dark:text-gray-200 overflow-auto font-mono'>
-                    {JSON.stringify(state.jsonData.value, null, 2)}
-                  </pre>
-                </div>
+            <div className='bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-h-[500px] overflow-hidden'>
+              {state.jsonData.isValid && state.treeData ? (
+                <JsonTree
+                  data={state.treeData}
+                  onNodeToggle={path => toggleNode(path.join('.'))}
+                  onNodeEdit={(path, value) => saveEdit(path.join('.'), value)}
+                  onExpandAll={expandAll}
+                  onCollapseAll={collapseAll}
+                  searchQuery={state.searchQuery}
+                  onSearchChange={setSearchQuery}
+                />
               ) : (
                 <div className='flex flex-col items-center justify-center h-full py-16 text-center'>
                   <FileText className='w-12 h-12 text-gray-400 dark:text-gray-500 mb-3' />
                   <p className='text-gray-500 dark:text-gray-400 text-sm'>
                     {state.rawInput
-                      ? 'Fix JSON errors to see preview'
-                      : 'Enter JSON to see formatted output'}
+                      ? 'Fix JSON errors to see tree view'
+                      : 'Enter JSON to see tree structure'}
                   </p>
                 </div>
               )}
