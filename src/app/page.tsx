@@ -2,6 +2,11 @@
 
 import { JsonInput, FileUpload, ValidationDisplay } from '@/components/input';
 import { JsonTree } from '@/components/tree';
+import {
+  CopyJsonButton,
+  DownloadJsonButton,
+  SimpleThemeToggle,
+} from '@/components/controls';
 import { useJsonContext } from '@/components/providers/JsonContextProvider';
 import { FileText } from 'lucide-react';
 
@@ -19,13 +24,18 @@ export default function Home() {
     <div className='min-h-screen bg-white dark:bg-gray-900 p-6'>
       <div className='max-w-6xl mx-auto'>
         {/* Header */}
-        <header className='mb-8'>
-          <h1 className='text-2xl font-semibold text-gray-900 dark:text-white mb-2'>
-            JSON Formatter
-          </h1>
-          <p className='text-gray-600 dark:text-gray-400'>
-            Validate and format JSON data
-          </p>
+        <header className='mb-8 flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl font-semibold text-gray-900 dark:text-white mb-2'>
+              JSON Formatter
+            </h1>
+            <p className='text-gray-600 dark:text-gray-400'>
+              Validate and format JSON data
+            </p>
+          </div>
+
+          {/* Theme toggle */}
+          <SimpleThemeToggle />
         </header>
 
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
@@ -62,9 +72,22 @@ export default function Home() {
 
           {/* Tree View Section */}
           <div className='space-y-4'>
-            <h2 className='text-lg font-medium text-gray-900 dark:text-white'>
-              Tree View
-            </h2>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-lg font-medium text-gray-900 dark:text-white'>
+                Tree View
+              </h2>
+
+              {/* Action buttons */}
+              {state.jsonData.isValid && state.jsonData.value && (
+                <div className='flex items-center gap-2'>
+                  <CopyJsonButton data={state.jsonData.value} />
+                  <DownloadJsonButton
+                    data={state.jsonData.value}
+                    filename='formatted-json'
+                  />
+                </div>
+              )}
+            </div>
 
             <div className='bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg min-h-[500px] overflow-hidden'>
               {state.jsonData.isValid && state.treeData ? (
