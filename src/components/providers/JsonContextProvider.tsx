@@ -2,14 +2,17 @@
 
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { AppState, JsonAction, JsonData, TreeNode } from '@/types/json';
+import { validateJson } from '@/utils/jsonUtils';
 import {
-  validateJson,
-  buildTree,
-  updateNodeValue,
-  expandAllNodes,
-  collapseAllNodes,
-  toggleNodeExpansion,
-} from '@/utils/jsonUtils';
+  buildTreeNode,
+  updateTreeNode,
+  expandAllTreeNodes,
+  collapseAllTreeNodes,
+  toggleTreeNodeExpansion,
+  collectExpandedPaths,
+  collectAllPaths,
+  reconstructJsonFromTree,
+} from '@/utils/treeUtils';
 
 // Initial state
 const initialState: AppState = {
@@ -36,7 +39,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
       let expandedNodes = new Set<string>();
 
       if (jsonData.isValid && jsonData.value !== null) {
-        treeData = buildTree(jsonData.value);
+        treeData = buildTreeNode(jsonData.value);
         // Initialize expanded nodes with auto-expanded paths
         expandedNodes = collectExpandedPaths(treeData);
       }
@@ -58,7 +61,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
       let expandedNodes = new Set<string>();
 
       if (jsonData.isValid && jsonData.value !== null) {
-        treeData = buildTree(jsonData.value);
+        treeData = buildTreeNode(jsonData.value);
         expandedNodes = collectExpandedPaths(treeData);
       }
 
@@ -76,7 +79,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
       if (!state.treeData) return state;
 
       const pathArray = nodePath.split('.').filter(p => p !== '');
-      const updatedTree = toggleNodeExpansion(state.treeData, pathArray);
+      const updatedTree = toggleTreeNodeExpansion(state.treeData, pathArray);
       const updatedExpandedNodes = new Set(state.expandedNodes);
 
       if (updatedExpandedNodes.has(nodePath)) {
@@ -95,7 +98,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
     case 'EXPAND_ALL': {
       if (!state.treeData) return state;
 
-      const expandedTree = expandAllNodes(state.treeData);
+      const expandedTree = expandAllTreeNodes(state.treeData);
       const allPaths = collectAllPaths(expandedTree);
 
       return {
@@ -108,7 +111,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
     case 'COLLAPSE_ALL': {
       if (!state.treeData) return state;
 
-      const collapsedTree = collapseAllNodes(state.treeData);
+      const collapsedTree = collapseAllTreeNodes(state.treeData);
 
       return {
         ...state,
@@ -131,7 +134,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
 
       try {
         const pathArray = path.split('.').filter(p => p !== '');
-        const updatedTree = updateNodeValue(state.treeData, pathArray, value);
+        const updatedTree = updateTreeNode(state.treeData, pathArray, value);
 
         // Update the JSON data with the new tree structure
         const updatedJsonData: JsonData = {
@@ -185,65 +188,6 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
     default:
       return state;
   }
-}
-
-// Helper functions
-function collectExpandedPaths(
-  node: TreeNode,
-  currentPath: string = ''
-): Set<string> {
-  const paths = new Set<string>();
-
-  if (node.isExpanded && currentPath) {
-    paths.add(currentPath);
-  }
-
-  if (node.children) {
-    node.children.forEach(child => {
-      const childPath = currentPath
-        ? `${currentPath}.${child.key}`
-        : child.key.toString();
-      const childPaths = collectExpandedPaths(child, childPath);
-      childPaths.forEach(path => paths.add(path));
-    });
-  }
-
-  return paths;
-}
-
-function collectAllPaths(node: TreeNode, currentPath: string = ''): string[] {
-  const paths: string[] = [];
-
-  if (currentPath) {
-    paths.push(currentPath);
-  }
-
-  if (node.children) {
-    node.children.forEach(child => {
-      const childPath = currentPath
-        ? `${currentPath}.${child.key}`
-        : child.key.toString();
-      paths.push(...collectAllPaths(child, childPath));
-    });
-  }
-
-  return paths;
-}
-
-function reconstructJsonFromTree(node: TreeNode): any {
-  if (node.type === 'object' && node.children) {
-    const obj: Record<string, any> = {};
-    node.children.forEach(child => {
-      obj[child.key.toString()] = reconstructJsonFromTree(child);
-    });
-    return obj;
-  }
-
-  if (node.type === 'array' && node.children) {
-    return node.children.map(child => reconstructJsonFromTree(child));
-  }
-
-  return node.value;
 }
 
 // Context type
