@@ -1,6 +1,6 @@
 // Core JSON data types
 export interface JsonData {
-  value: any;
+  value: unknown;
   isValid: boolean;
   error?: string;
   errorLocation?: { line: number; column: number };
@@ -9,7 +9,7 @@ export interface JsonData {
 // Tree node structure for JSON visualization
 export interface TreeNode {
   key: string | number;
-  value: any;
+  value: unknown;
   type: 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null';
   path: string[];
   isExpanded: boolean;
@@ -18,7 +18,8 @@ export interface TreeNode {
 }
 
 // Application theme types
-export type Theme = 'light' | 'dark';
+export type Theme = 'light' | 'dark' | 'system';
+export type ResolvedTheme = 'light' | 'dark';
 
 // View mode types
 export type ViewMode = 'tree' | 'raw';
@@ -51,7 +52,7 @@ export type JsonAction =
   | { type: 'COLLAPSE_ALL' }
   | { type: 'SET_THEME'; payload: Theme }
   | { type: 'START_EDITING'; payload: string }
-  | { type: 'SAVE_EDIT'; payload: { path: string; value: any } }
+  | { type: 'SAVE_EDIT'; payload: { path: string; value: unknown } }
   | { type: 'CANCEL_EDIT' }
   | { type: 'SET_SEARCH'; payload: string }
   | { type: 'SET_VIEW_MODE'; payload: ViewMode };
@@ -59,6 +60,7 @@ export type JsonAction =
 // Theme context interface
 export interface ThemeContextType {
   theme: Theme;
+  resolvedTheme: ResolvedTheme;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 }
@@ -94,7 +96,7 @@ export interface ValidationDisplayProps {
 export interface JsonTreeProps {
   data: TreeNode | null;
   onNodeToggle: (path: string) => void;
-  onNodeEdit: (path: string, value: any) => void;
+  onNodeEdit: (path: string, value: unknown) => void;
   searchQuery?: string;
   className?: string;
 }
@@ -102,7 +104,7 @@ export interface JsonTreeProps {
 export interface JsonNodeProps {
   node: TreeNode;
   onToggle: (path: string) => void;
-  onEdit: (path: string, value: any) => void;
+  onEdit: (path: string, value: unknown) => void;
   isSearchMatch?: boolean;
   level?: number;
 }
