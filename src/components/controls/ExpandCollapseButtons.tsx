@@ -6,7 +6,7 @@ import { Expand, Minimize, ChevronDown, ChevronRight } from 'lucide-react';
 interface ExpandCollapseButtonsProps {
   onExpandAll: () => void;
   onCollapseAll: () => void;
-  isExpanded?: boolean;
+
   disabled?: boolean;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
@@ -17,7 +17,6 @@ interface ExpandCollapseButtonsProps {
 export function ExpandCollapseButtons({
   onExpandAll,
   onCollapseAll,
-  isExpanded,
   disabled = false,
   className = '',
   size = 'md',

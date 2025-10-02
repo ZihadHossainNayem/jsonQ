@@ -1,5 +1,5 @@
 export interface JsonData {
-  value: any;
+  value: unknown;
   isValid: boolean;
   error?: string;
   errorLocation?: { line: number; column: number };
@@ -7,7 +7,7 @@ export interface JsonData {
 
 export interface TreeNode {
   key: string | number;
-  value: any;
+  value: unknown;
   type: 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null';
   path: string[];
   isExpanded: boolean;
@@ -32,7 +32,7 @@ export type JsonAction =
   | { type: 'EXPAND_ALL' }
   | { type: 'COLLAPSE_ALL' }
   | { type: 'START_EDITING'; payload: string }
-  | { type: 'SAVE_EDIT'; payload: { path: string; value: any } }
+  | { type: 'SAVE_EDIT'; payload: { path: string; value: unknown } }
   | { type: 'CANCEL_EDIT' }
   | { type: 'SET_SEARCH_QUERY'; payload: string }
   | { type: 'SET_VIEW_MODE'; payload: 'tree' | 'raw' }

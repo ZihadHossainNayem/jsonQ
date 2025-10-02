@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import {
   ChevronRight,
   ChevronDown,
@@ -27,7 +27,7 @@ interface JsonNodeProps {
   className?: string;
 }
 
-export function JsonNode({
+export const JsonNode = memo(function JsonNode({
   node,
   level = 0,
   onToggle,
@@ -41,19 +41,25 @@ export function JsonNode({
   const isExpandable = node.type === 'object' || node.type === 'array';
   const indentLevel = level * 20;
 
-  const handleToggle = () => {
+  const handleToggle = useCallback(() => {
     if (isExpandable) {
       onToggle(node.path);
     }
-  };
+  }, [isExpandable, onToggle, node.path]);
 
-  const handleValueEdit = (newValue: unknown) => {
-    onEdit?.(node.path, newValue);
-  };
+  const handleValueEdit = useCallback(
+    (newValue: unknown) => {
+      onEdit?.(node.path, newValue);
+    },
+    [onEdit, node.path]
+  );
 
-  const handleKeyEdit = (oldKey: string | number, newKey: string) => {
-    onKeyEdit?.(node.path, oldKey, newKey);
-  };
+  const handleKeyEdit = useCallback(
+    (oldKey: string | number, newKey: string) => {
+      onKeyEdit?.(node.path, oldKey, newKey);
+    },
+    [onKeyEdit, node.path]
+  );
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -178,7 +184,7 @@ export function JsonNode({
       )}
     </div>
   );
-}
+});
 
 // Helper functions
 function getTypeIconColor(type: string): string {

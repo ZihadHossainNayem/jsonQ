@@ -1,6 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  memo,
+  useCallback,
+} from 'react';
 import { Search, Expand, Minimize, X } from 'lucide-react';
 import { TreeNode } from '@/types';
 import { JsonNode } from './JsonNode';
@@ -22,7 +29,7 @@ interface JsonTreeProps {
   className?: string;
 }
 
-export function JsonTree({
+export const JsonTree = memo(function JsonTree({
   data,
   onNodeToggle,
   onNodeEdit,
@@ -67,42 +74,42 @@ export function JsonTree({
     onSearchChange?.(value);
   };
 
-  const handleClearSearch = () => {
+  const handleClearSearch = useCallback(() => {
     setLocalSearchQuery('');
     onSearchChange?.('');
     searchInputRef.current?.focus();
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    // Global keyboard shortcuts
-    if (e.ctrlKey || e.metaKey) {
-      switch (e.key) {
-        case 'f':
-          e.preventDefault();
-          searchInputRef.current?.focus();
-          break;
-        case 'e':
-          e.preventDefault();
-          onExpandAll?.();
-          break;
-        case 'r':
-          e.preventDefault();
-          onCollapseAll?.();
-          break;
-      }
-    }
-
-    if (e.key === 'Escape' && isSearchFocused) {
-      handleClearSearch();
-      searchInputRef.current?.blur();
-    }
-  };
+  }, [onSearchChange]);
 
   // Add global keyboard listener
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Global keyboard shortcuts
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case 'f':
+            e.preventDefault();
+            searchInputRef.current?.focus();
+            break;
+          case 'e':
+            e.preventDefault();
+            onExpandAll?.();
+            break;
+          case 'r':
+            e.preventDefault();
+            onCollapseAll?.();
+            break;
+        }
+      }
+
+      if (e.key === 'Escape' && isSearchFocused) {
+        handleClearSearch();
+        searchInputRef.current?.blur();
+      }
+    };
+
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchFocused, onExpandAll, onCollapseAll]);
+  }, [isSearchFocused, onExpandAll, onCollapseAll, handleClearSearch]);
 
   if (!data) {
     return (
@@ -260,7 +267,7 @@ export function JsonTree({
           <div className='flex items-center justify-center h-full text-gray-500 dark:text-gray-400'>
             <div className='text-center'>
               <div className='text-4xl mb-2'>🔍</div>
-              <p>No results found for "{localSearchQuery}"</p>
+              <p>No results found for &quot;{localSearchQuery}&quot;</p>
               <button
                 onClick={handleClearSearch}
                 className='mt-2 text-blue-600 dark:text-blue-400 hover:underline'
@@ -287,4 +294,4 @@ export function JsonTree({
       </div>
     </div>
   );
-}
+});

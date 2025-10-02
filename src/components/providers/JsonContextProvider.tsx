@@ -149,7 +149,7 @@ function jsonReducer(state: AppState, action: JsonAction): AppState {
           editingNode: null,
           rawInput: JSON.stringify(updatedJsonData.value, null, 2),
         };
-      } catch (error) {
+      } catch {
         // If edit fails, just cancel editing
         return {
           ...state,
@@ -201,7 +201,7 @@ interface JsonContextType {
   expandAll: () => void;
   collapseAll: () => void;
   startEditing: (path: string) => void;
-  saveEdit: (path: string, value: any) => void;
+  saveEdit: (path: string, value: unknown) => void;
   cancelEdit: () => void;
   setSearchQuery: (query: string) => void;
   setViewMode: (mode: 'tree' | 'raw') => void;
@@ -231,7 +231,7 @@ export function JsonContextProvider({ children }: JsonContextProviderProps) {
     collapseAll: () => dispatch({ type: 'COLLAPSE_ALL' }),
     startEditing: (path: string) =>
       dispatch({ type: 'START_EDITING', payload: path }),
-    saveEdit: (path: string, value: any) =>
+    saveEdit: (path: string, value: unknown) =>
       dispatch({ type: 'SAVE_EDIT', payload: { path, value } }),
     cancelEdit: () => dispatch({ type: 'CANCEL_EDIT' }),
     setSearchQuery: (query: string) =>

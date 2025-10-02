@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { Edit2, Check, X, Copy } from 'lucide-react';
 
 interface JsonValueProps {
@@ -12,7 +12,7 @@ interface JsonValueProps {
   className?: string;
 }
 
-export function JsonValue({
+export const JsonValue = memo(function JsonValue({
   value,
   type,
   isEditable = false,
@@ -160,7 +160,7 @@ export function JsonValue({
       </div>
     </div>
   );
-}
+});
 
 // Helper functions
 function getDisplayValue(value: unknown, type: string): string {

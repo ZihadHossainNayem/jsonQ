@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { Edit2, Check, X } from 'lucide-react';
 
 interface JsonKeyProps {
@@ -11,7 +11,7 @@ interface JsonKeyProps {
   className?: string;
 }
 
-export function JsonKey({
+export const JsonKey = memo(function JsonKey({
   keyName,
   path,
   isEditable = false,
@@ -133,4 +133,4 @@ export function JsonKey({
       <span className='text-gray-500 dark:text-gray-400'>:</span>
     </div>
   );
-}
+});
