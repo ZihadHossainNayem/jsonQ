@@ -1,8 +1,8 @@
 'use client';
 
-import { JsonInput, FileUpload } from '@/components/input';
+import { JsonInput, FileUpload, ValidationDisplay } from '@/components/input';
 import { useJsonContext } from '@/components/providers/JsonContextProvider';
-import { FileText, CheckCircle, XCircle } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 export default function Home() {
   const { state } = useJsonContext();
@@ -42,38 +42,13 @@ export default function Home() {
 
             <JsonInput />
 
-            {/* Validation Status */}
+            {/* Validation Display */}
             {state.rawInput && (
-              <div
-                className={`p-4 rounded-lg border ${
-                  state.jsonData.isValid
-                    ? 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800/30'
-                    : 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800/30'
-                }`}
-              >
-                {state.jsonData.isValid ? (
-                  <div className='flex items-center gap-2 text-green-800 dark:text-green-200'>
-                    <CheckCircle className='w-4 h-4' />
-                    <span className='font-medium'>Valid JSON</span>
-                  </div>
-                ) : (
-                  <div className='text-red-800 dark:text-red-200'>
-                    <div className='flex items-center gap-2 mb-2'>
-                      <XCircle className='w-4 h-4' />
-                      <span className='font-medium'>Invalid JSON</span>
-                    </div>
-                    <p className='text-sm text-red-700 dark:text-red-300'>
-                      {state.jsonData.error}
-                    </p>
-                    {state.jsonData.errorLocation && (
-                      <p className='text-xs text-red-600 dark:text-red-400 mt-1'>
-                        Line {state.jsonData.errorLocation.line}, Column{' '}
-                        {state.jsonData.errorLocation.column}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
+              <ValidationDisplay
+                error={state.jsonData.error}
+                isValid={state.jsonData.isValid}
+                errorLocation={state.jsonData.errorLocation}
+              />
             )}
           </div>
 
